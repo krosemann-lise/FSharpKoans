@@ -33,7 +33,7 @@ module ``about functions`` =
             let double x =
                 x * 2
 
-            double(double(x))
+            double <| double x
 
         let result = quadruple 4
         AssertEquality result 16
