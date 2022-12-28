@@ -78,13 +78,13 @@ module ``about the stock example`` =
         let _, openPrice, closePrice = openAndCloseOnDate
         closePrice - openPrice
 
-    let DateWithMaxAbsoluteDifference rows =
+    let DateWithMaxAbsoluteDifferenceIn rows =
         rows
         |> List.map ParsedOpenAndCloseOnDate
-        |> Seq.maxBy (fun onDate -> abs (OpenCloseDifference onDate))
+        |> Seq.maxBy (fun onDate -> abs <| OpenCloseDifference onDate)
 
     [<Koan>]
     let YouGotTheAnswerCorrect () =
         let rows = stockData.Tail
-        let result, _, _ = DateWithMaxAbsoluteDifference rows
+        let result, _, _ = DateWithMaxAbsoluteDifferenceIn rows
         AssertEquality "2012-03-13" result
