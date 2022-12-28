@@ -29,7 +29,7 @@ module ``about strings`` =
             sprintf "F# turns it to %d!" 11
 
         AssertEquality message "F# turns it to 11!"
-        printf "%s%i%f%b%A" "N" 7 3.14 true (1, 2, 3)
+        printfn "%s%i%f%b%A" "N" 7 3.14 true (1, 2, 3)
 
     //NOTE: you can use printf to print to standard output
 
