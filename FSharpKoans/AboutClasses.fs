@@ -1,4 +1,5 @@
 ﻿namespace FSharpKoans
+
 open FSharpKoans.Core
 
 //---------------------------------------------------------------
@@ -8,75 +9,80 @@ open FSharpKoans.Core
 // create traditional classes to contain data and methods.
 //---------------------------------------------------------------
 
-type Zombie() =
-    member this.FavoriteFood = "brains"
-
-    member this.Eat food =
-        match food with
-        | "brains" -> "mmmmmmmmmmmmmmm"
-        | _ -> "grrrrrrrr"
-
-type Person(name:string) =
-    member this.Speak() =
-        "Hi my name is " + name
-
-type Zombie2() =
-    let favoriteFood = "brains"
-
-    member this.Eat food =
-        if food = favoriteFood then "mmmmmmmmmmmmmmm" else "grrrrrrrr"
-
-type Person2(name:string) =
-    let mutable internalName = name
-
-    member this.Name
-        with get() = internalName
-        and set(value) = internalName <- value
-
-    member this.Speak() =
-        "Hi my name is " + this.Name
-
 [<Koan(Sort = 21)>]
 module ``about classes`` =
 
-    [<Koan>]
-    let ClassesCanHaveProperties() =
-        let zombie = new Zombie()
+    type Zombie() =
+        member this.FavoriteFood = "brains"
 
-        AssertEquality zombie.FavoriteFood __
+        member this.Eat food =
+            match food with
+            | "brains" -> "mmmmmmmmmmmmmmm... brains"
+            | _ -> "grrrrrrrr"
 
     [<Koan>]
-    let ClassesCanHaveMethods() =
-        let zombie = new Zombie()
+    let ClassesCanHaveProperties () =
+        let zombie = Zombie()
+
+        AssertEquality zombie.FavoriteFood "brains"
+
+    [<Koan>]
+    let ClassesCanHaveMethods () =
+        let zombie = Zombie()
 
         let result = zombie.Eat "brains"
-        AssertEquality result __
-    
+        AssertEquality result "mmmmmmmmmmmmmmm... brains"
+
+    type Person(name: string) =
+        member this.Speak() = "Hi my name is " + name
+
     [<Koan>]
-    let ClassesCanHaveConstructors() =
-    
-        let person = new Person("Shaun")
+    let ClassesCanHaveConstructors () =
+
+        let person = Person("Shaun")
 
         let result = person.Speak()
-        AssertEquality result __
+        AssertEquality result "Hi my name is Shaun"
+
+    type VerboseZombie() =
+        let favoriteFood = "brains"
+
+        member this.Eat food =
+            if food = favoriteFood then
+                $"mmmmmmmmmmmmmmm.. i like %s{favoriteFood}"
+            else
+                $"grrrrrrrr.. no like %s{food}"
 
     [<Koan>]
-    let ClassesCanHaveLetBindingsInsideThem() =
-        let zombie = new Zombie2()
+    let ClassesCanHaveLetBindingsInsideThem () =
+        let zombie = VerboseZombie()
 
         let result = zombie.Eat "chicken"
-        AssertEquality result __
+        AssertEquality result "grrrrrrrr.. no like chicken"
 
-        (* TRY IT: Can you access the let bound value Zombie2.favoriteFood
+    (* TRY IT: Can you access the let bound value Zombie2.favoriteFood
                    outside of the class definition? *)
 
+    type RenamablePerson(name: string) =
+        let mutable internalName = name
+        let mutable phrase = "Hi my name is"
+
+        member this.Name = internalName
+
+        member this.Rename name =
+            phrase <- "Hi. I've been renamed to"
+            internalName <- name
+
+        member this.Speak() =
+            String.concat " " [ phrase; internalName ]
+
     [<Koan>]
-    let ClassesCanHaveReadWriteProperties() =
-        let person = new Person2("Shaun")
+    let ClassesCanHaveReadWriteProperties () =
+        let person = RenamablePerson("Shaun")
 
         let firstPhrase = person.Speak()
-        AssertEquality firstPhrase __
+        AssertEquality firstPhrase "Hi my name is Shaun"
 
-        person.Name <- "Shaun of the Dead"
+        person.Rename "Shaun of the Dead"
         let secondPhrase = person.Speak()
-        AssertEquality secondPhrase __
+        AssertEquality secondPhrase "Hi. I've been renamed to Shaun of the Dead"
